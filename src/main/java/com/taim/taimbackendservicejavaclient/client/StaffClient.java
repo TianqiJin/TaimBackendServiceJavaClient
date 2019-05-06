@@ -13,17 +13,16 @@ import java.util.List;
 public class StaffClient {
 
     private final RestTemplate restTemplate;
-    private final UriComponentsBuilder uriComponentsBuilder;
+    private final String rootBackendServiceUrl;
 
     @Autowired
-    public StaffClient(RestTemplate restTemplate,
-                       UriComponentsBuilder uriComponentsBuilder) {
+    public StaffClient(RestTemplate restTemplate, String rootBackendServiceUrl) {
         this.restTemplate = restTemplate;
-        this.uriComponentsBuilder = uriComponentsBuilder;
+        this.rootBackendServiceUrl = rootBackendServiceUrl;
     }
 
     public List<StaffDTO> getAllStaffs() {
-        String uri = uriComponentsBuilder.path("/staffs")
+        String uri = UriComponentsBuilder.fromHttpUrl(rootBackendServiceUrl).path("/staffs")
                 .queryParam("action", "getAll")
                 .toUriString();
         StaffDTO[] results = restTemplate.getForObject(uri, StaffDTO[].class);

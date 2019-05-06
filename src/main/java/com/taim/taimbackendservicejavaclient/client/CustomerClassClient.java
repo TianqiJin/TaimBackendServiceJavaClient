@@ -13,17 +13,16 @@ import java.util.List;
 public class CustomerClassClient {
 
     private final RestTemplate restTemplate;
-    private final UriComponentsBuilder componentsBuilder;
+    private final String rootBackendServiceUrl;
 
     @Autowired
-    public CustomerClassClient(RestTemplate restTemplate,
-                               UriComponentsBuilder componentsBuilder) {
+    public CustomerClassClient(RestTemplate restTemplate, String rootBackendServiceUrl) {
         this.restTemplate = restTemplate;
-        this.componentsBuilder = componentsBuilder;
+        this.rootBackendServiceUrl = rootBackendServiceUrl;
     }
 
     public List<CustomerClassDTO> getAllCustomerClasses() {
-        String uri = componentsBuilder.path("/customerclasses")
+        String uri = UriComponentsBuilder.fromHttpUrl(rootBackendServiceUrl).path("/customerclasses")
                 .queryParam("action", "getAll")
                 .toUriString();
         CustomerClassDTO[] results = this.restTemplate.getForObject(uri, CustomerClassDTO[].class);
@@ -32,7 +31,7 @@ public class CustomerClassClient {
     }
 
     public CustomerClassDTO getCustomerClassByName(String customerClassName) {
-        String uri = componentsBuilder.path("/customerclasses")
+        String uri = UriComponentsBuilder.fromHttpUrl(rootBackendServiceUrl).path("/customerclasses")
                 .queryParam("action", "getByFilter")
                 .queryParam("name", customerClassName)
                 .toUriString();

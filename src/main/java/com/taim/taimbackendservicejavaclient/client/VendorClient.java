@@ -14,17 +14,16 @@ import java.util.List;
 public class VendorClient {
 
     private final RestTemplate restTemplate;
-    private final UriComponentsBuilder uriComponentsBuilder;
+    private final String rootBackendServiceUrl;
 
     @Autowired
-    public VendorClient(RestTemplate restTemplate,
-                        UriComponentsBuilder uriComponentsBuilder) {
+    public VendorClient(RestTemplate restTemplate, String rootBackendServiceUrl) {
         this.restTemplate = restTemplate;
-        this.uriComponentsBuilder = uriComponentsBuilder;
+        this.rootBackendServiceUrl = rootBackendServiceUrl;
     }
 
     public List<VendorDTO> getAllVendors() {
-        String uri = uriComponentsBuilder.path("/vendors")
+        String uri = UriComponentsBuilder.fromHttpUrl(rootBackendServiceUrl).path("/vendors")
                 .queryParam("action", "getAll")
                 .toUriString();
         VendorDTO[] results = restTemplate.getForObject(uri, VendorDTO[].class);
@@ -33,7 +32,7 @@ public class VendorClient {
     }
 
     public VendorDTO saveVendor(CreateVendorDTO createVendorDTO) {
-        String uri = uriComponentsBuilder.path("/vendors")
+        String uri = UriComponentsBuilder.fromHttpUrl(rootBackendServiceUrl).path("/vendors")
                 .queryParam("action", "new")
                 .toUriString();
         VendorDTO result = this.restTemplate.postForObject(uri, createVendorDTO, VendorDTO.class);

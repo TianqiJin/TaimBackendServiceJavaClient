@@ -15,17 +15,17 @@ import java.util.List;
 public class CustomerClient {
 
     private final RestTemplate restTemplate;
-    private final UriComponentsBuilder uriComponentsBuilder;
+    private final String rootBackendServiceUrl;
 
     @Autowired
     public CustomerClient(RestTemplate restTemplate,
-                          UriComponentsBuilder uriComponentsBuilder) {
+                          String rootBackendServiceUrl) {
         this.restTemplate = restTemplate;
-        this.uriComponentsBuilder = uriComponentsBuilder;
+        this.rootBackendServiceUrl = rootBackendServiceUrl;
     }
 
     public List<CustomerDTO> getAllCustomers() {
-        String uri = uriComponentsBuilder.path("/customer")
+        String uri = UriComponentsBuilder.fromHttpUrl(rootBackendServiceUrl).path("/customers")
                 .queryParam("action", "getAll")
                 .toUriString();
 
@@ -35,7 +35,7 @@ public class CustomerClient {
     }
 
     public CustomerDTO saveCustomer(CreateCustomerDTO createCustomerDTO) {
-        String uri = uriComponentsBuilder.path("/customer")
+        String uri = UriComponentsBuilder.fromHttpUrl(rootBackendServiceUrl).path("/customers")
                 .queryParam("action", "new")
                 .toUriString();
 

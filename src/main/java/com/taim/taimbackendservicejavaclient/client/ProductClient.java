@@ -14,18 +14,17 @@ import java.util.List;
 public class ProductClient {
 
     private final RestTemplate restTemplate;
-    private final UriComponentsBuilder uriComponentsBuilder;
+    private final String rootBackendServiceUrl;
 
 
     @Autowired
-    public ProductClient(RestTemplate restTemplate,
-                         UriComponentsBuilder uriComponentsBuilder) {
+    public ProductClient(RestTemplate restTemplate, String rootBackendServiceUrl) {
         this.restTemplate = restTemplate;
-        this.uriComponentsBuilder = uriComponentsBuilder;
+        this.rootBackendServiceUrl = rootBackendServiceUrl;
     }
 
     public List<ProductDTO> getAllProducts() {
-        String uri = uriComponentsBuilder.path("/products")
+        String uri = UriComponentsBuilder.fromHttpUrl(rootBackendServiceUrl).path("/products")
                 .queryParam("action", "getAll")
                 .toUriString();
         ProductDTO[] results = restTemplate.getForObject(uri, ProductDTO[].class);
@@ -34,7 +33,7 @@ public class ProductClient {
     }
 
     public ProductDTO getProductById(Long id) {
-        String uri = uriComponentsBuilder.path("/products")
+        String uri = UriComponentsBuilder.fromHttpUrl(rootBackendServiceUrl).path("/products")
                 .queryParam("action", "getById")
                 .queryParam("id", id)
                 .toUriString();
@@ -44,7 +43,7 @@ public class ProductClient {
     }
 
     public ProductDTO createNewProduct(CreateProductDTO createProductDTO) {
-        String uri = uriComponentsBuilder.path("/products")
+        String uri = UriComponentsBuilder.fromHttpUrl(rootBackendServiceUrl).path("/products")
                 .queryParam("action", "new")
                 .toUriString();
         ProductDTO result = restTemplate.postForObject(uri, createProductDTO, ProductDTO.class);
