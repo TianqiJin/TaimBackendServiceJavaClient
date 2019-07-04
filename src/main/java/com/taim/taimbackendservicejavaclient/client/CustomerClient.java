@@ -43,4 +43,13 @@ public class CustomerClient {
 
         return result;
     }
+
+    public CustomerDTO getCustomerByCustomerId(Long customerId) {
+        String uri = UriComponentsBuilder.fromHttpUrl(rootBackendServiceUrl).path("/customers")
+                .queryParam("action", "getById")
+                .queryParam("id", customerId)
+                .toUriString();
+
+        return this.restTemplate.getForObject(uri, CustomerDTO.class);
+    }
 }
